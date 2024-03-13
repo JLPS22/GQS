@@ -1,1 +1,1 @@
-# GQS
+# Gestão e Qualidade de Software.
