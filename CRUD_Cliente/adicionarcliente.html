@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionar Cliente</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gr {
+            text-align: center;
+            color: #000000;
+        }
+
+        #addForm {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="addForm">
+        <h2>Adicionar Cliente</h2>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome">
+        <label for="email">Email:</label>
+        <input type="text" id="email">
+        <label for="telefone">Telefone:</label>
+        <input type="text" id="telefone">
+        <button onclick="addCliente()">Adicionar</button>
+    </div>
+
+    <div id="clientesList"></div>
+
+    <script>
+        function addCliente() {
+            var nome = document.getElementById('nome').value;
+            var email = document.getElementById('email').value;
+            var telefone = document.getElementById('telefone').value;
+
+            if (nome == '') {
+                alert('Informe o nome do cliente.');
+                document.getElementById("nome").focus();
+            } else if (email == '') {
+                alert('Informe o email do cliente.');
+                document.getElementById("email").focus();
+            } else if (telefone == '') {
+                alert('Informe o número do telefone do cliente.');
+                document.getElementById("telefone").focus();
+            } else {
+                var data = {
+                    nome: nome,
+                    email: email,
+                    telefone: telefone
+                };
+
+                fetch('http://localhost:3000/cadastrar_cliente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Resposta:', data);
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                    });
+                alert('Cliente Cadastrado.');
+                location.reload();
+            }
+        }
+    </script>
+
+
+
+
+    </div>
+
+</body>
+
+</html>

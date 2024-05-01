@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Estoque</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gr{
+            text-align: center;
+            color: #000000;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        img {
+            max-width: 50px;
+            max-height: 50px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            margin-right: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+            margin-left: 170px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="gr"><h1>Gerenciamento de Estoque</h1></div> 
+
+    <div id="produtosTables">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Valor</th>
+                    <th>Quantidade em estoque</th>
+                    <th>Edição</th>
+                    <th>Deleção</th>
+                </tr>
+            </thead>
+            <tbody id="produtosList"></tbody>
+        </table>
+    </div>
+
+    <button type="button" onclick="abrirPag()"> Cadastrar Produto</button><br><br><br>
+
+    <script>
+        // Carrega a lista de produtos automaticamente
+        getProdutos(updateProdutosList);
+
+        function updateProdutosList(produtos) {
+            var produtosList = document.getElementById('produtosList');
+            produtosList.innerHTML = '';
+
+            if (produtos.length == 0) {
+                produtosList.innerHTML += '<tr><td colspan="3">Nenhum produto cadastrado.</td></tr>';
+            } else {
+                produtos.forEach(function (produto) {
+                    produtosList.innerHTML += `
+                        <tr>
+                            <td>${produto.nome}</td>
+                            <td>R$ ${produto.valor}</td>
+                            <td>${produto.qtdEstoque}</td>
+                            <td><a href="editarproduto.html?id=${produto.idProduto}">Editar Produto</a></td>
+                            <td><a href="excluirproduto.html?id=${produto.idProduto}">Excluir Produto</a></td>
+                        </tr>`;
+                });
+            }
+        }
+
+        function getProdutos(callback) {
+            fetch('http://localhost:3000/getDataProduto')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter lista de produtos:', error);
+                });
+        }
+
+        function abrirPag() {
+            open('adicionarproduto.html');
+        }
+    </script>
+
+</body>
+</html>

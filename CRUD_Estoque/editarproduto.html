@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #editForm {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Editar Produto</h1>
+
+    <div id="editForm">
+        <h2>Editar Produto</h2>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome">
+        <label for="quantidade">Quantidade:</label>
+        <input type="text" id="quantidade">
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor">
+        <button onclick="salvarEdicao()">Salvar Edição</button>
+    </div>
+
+    <script>
+        function salvarEdicao() {
+            var url = window.location.href;
+            var parametrosURL = new URLSearchParams(url.split('?')[1]);
+            const idProduto = parametrosURL.get('id');
+
+            var nome = document.getElementById('nome').value;
+            var quantidade = document.getElementById('quantidade').value;
+            var valor = document.getElementById('valor').value;
+
+            if (nome == '') {
+                alert('Informe o nome do produto.');
+                document.getElementById("nome").focus();
+            } else if (quantidade == '') {
+                alert('Informe o quantidade do produto.');
+                document.getElementById("quantidade").focus();
+            } else if (valor == '') {
+                alert('Informe o número do valor do produto.');
+                document.getElementById("valor").focus();
+            } else {
+                fetch(`http://localhost:3000/atualizar_produto/${idProduto}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nome: nome,
+                        qtdEstoque: quantidade,
+                        valor: valor
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Erro ao atualizar produto:', error);
+                    });
+
+                alert('Produto editado.');
+                close('editarproduto.html');
+                open('gerenciarEstoque.html');
+            }
+        }
+    </script>
+</body>
+</html>

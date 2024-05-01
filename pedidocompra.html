@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido de Compra</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gr {
+            text-align: center;
+            color: #000000;
+        }
+
+        form {
+            width: 60%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gr">
+        <h1> Pedido de Compra</h1>
+    </div>
+
+    <form>
+        <label for="nome">Nome Cliente:</label>
+        <input type="text" id="nome" required>
+
+        <label for="produto">Produto:</label>
+        <select id="produto" required></select>
+
+        <label for="quantidade">Quantidade:</label>
+        <input type="number" id="quantidade" value="0" required>
+
+        <button type="button" onclick="processarPedido()">Enviar Pedido</button>
+    </form>
+
+    <script>
+        // Listar opções de produtos.
+        getProdutos(updateProdutosList);
+
+        function updateProdutosList(produtos) {
+            var listProduto = document.getElementById('produto');
+            listProduto.innerHTML = '';
+
+            produtos.forEach(function (produto) {
+                listProduto.innerHTML += `
+                    <option value="${produto.nome}">${produto.nome} R$ ${produto.valor}</option>
+                `;
+            });
+        }
+
+        function getProdutos(callback) {
+            fetch('http://localhost:3000/getDataProduto')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter lista de produtos:', error);
+                });
+        }
+
+
+        // Verifica os campos, adiciona as informações de compra e atualiza o estoque do produto.
+        function processarPedido() {
+            var nome = document.getElementById('nome').value;
+            var produto = document.getElementById('produto').value;
+            var quantidade = document.getElementById('quantidade').value;
+            var comprar = false;
+            var nomeCliente = '';
+
+            if (nome == '') {
+                alert("Digite o nome do cliente.");
+                document.getElementById('nome').focus();
+            } else if (quantidade <= 0) {
+                alert("Defina a quantidade que deseja levar desse produto");
+            } else {
+                fetch('http://localhost:3000/getDataCliente')
+                    .then(response => response.json())
+                    .then(clientes => {
+                        clientes.forEach(cliente => {
+                            if (nome == cliente.nome) {
+                                comprar = true;
+                                nomeCliente = cliente.nome;
+                            }
+                        });
+
+                        if (comprar) {
+                            fetch('http://localhost:3000/getDataProduto')
+                                .then(response => response.json())
+                                .then(datas => {
+                                    datas.forEach(data => {
+                                        if (produto == data.nome) {
+                                            var idP = data.idProduto;
+                                            var nomeP = data.nome;
+                                            var quantidadeP = data.qtdEstoque - quantidade;
+                                            var valorP = data.valor;
+
+                                            var nomeProduto = data.nome;
+                                            var valorTotal = quantidade * data.valor;
+
+                                            if (data.qtdEstoque == 0) {
+                                                alert("Esse produto está esgotado.");
+                                            } else if (data.qtdEstoque < quantidade) {
+                                                alert(`Temos apenas ${data.qtdEstoque} no nosso estoque.`)
+                                            } else {
+                                                var resposta = confirm(`Efetuar pagamento no valor de R$ ${valorTotal.toFixed(2)}`);
+                                            }
+
+                                            if (resposta) {
+                                                var data = {
+                                                    nomeCliente: nomeCliente,
+                                                    nomeProduto: nomeProduto,
+                                                    quantidade: quantidade,
+                                                    valor: valorTotal
+                                                };
+
+                                                fetch('http://localhost:3000/adicionando_venda', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify(data)
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log('Resposta:', data);
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Erro:', error);
+                                                    });
+                                                alert('Compra realizada.');
+
+                                                // Atualizando Estoque
+                                                fetch(`http://localhost:3000/atualizar_produto/${idP}`, {
+                                                    method: 'PUT',
+                                                    headers: {
+                                                        'Content-Type': 'application/json',
+                                                    },
+                                                    body: JSON.stringify({
+                                                        nome: nomeP,
+                                                        qtdEstoque: quantidadeP,
+                                                        valor: valorP
+                                                    }),
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        console.log(data.message);
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Erro ao atualizar produto:', error);
+                                                    });    
+                                            }
+
+                                            
+
+                                            
+                                        }
+                                    });
+                                })
+                        } else {
+                            alert("Cliente não cadastrado.");
+                            document.getElementById('nome').focus();
+                        }
+
+                    })
+            }
+
+        }
+
+    </script>
+</body>
+
+</html>

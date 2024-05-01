@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .gr {
+            color: #000000;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="gr">
+        <h1>Relatórios</h1>
+    </div>
+
+    <!-- Relatório de Produtos Mais Vendidos -->
+    <table>
+        <caption>Produtos Mais Vendidos</caption>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody id="produtosMaisVendidos"></tbody>
+    </table>
+
+    <!-- Relatório de Produto por Cliente -->
+    <table>
+        <caption>Produto por Cliente</caption>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Número de Cliente(s)</th>
+            </tr>
+        </thead>
+        <tbody id="prodPorCliente"></tbody>
+    </table>
+
+    <!-- Relatório de Consumo Médio do Cliente -->
+    <table>
+        <caption>Consumo Médio do Cliente</caption>
+        <thead>
+            <tr>
+                <th>Consumo Médio</th>
+            </tr>
+        </thead>
+        <tbody id="consumoMedio"></tbody>
+    </table>
+
+    <!-- Relatório de Produto com Baixo Estoque -->
+    <table>
+        <caption>Produto com Baixo Estoque</caption>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody id="prodBaixoEst"></tbody>
+    </table>
+
+    <script>
+
+        getProdutosMaisVendidos(listProdutosMaisVendidos); // Geração de relatório de produtos mais vendido.
+
+        getCMC(cmc); //Geração de relatório de consumo médio do cliente.
+
+        getProdBaixoEst(prodBaixoEst); // Geração de relatório de produto com baixo estoque.
+
+        getProdCliente(prodCliente); // Geração de relatório de produto por cliente.
+
+
+
+        // Geração de relatório de produtos mais vendido.
+        function listProdutosMaisVendidos(produtos) {
+            var produtosList = document.getElementById('produtosMaisVendidos');
+            produtosList.innerHTML = '';
+
+            produtos.forEach(function (produto) {
+                produtosList.innerHTML += `
+                        <tr>
+                            <td>${produto.nomeProduto}</td>
+                            <td>${produto.sumqtd}</td>
+                        </tr>`;
+            });
+        }
+
+        function getProdutosMaisVendidos(callback) {
+            fetch('http://localhost:3000/prodmaisvendidos')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter produto:', error);
+                });
+        }
+
+        //Geração de relatório de consumo médio do cliente.
+        function cmc(consumos) {
+            var consumoM = document.getElementById('consumoMedio');
+            let valor = consumos[0].cmc;
+            consumoM.innerHTML = '';
+
+            consumoM.innerHTML += `
+                <tr>
+                    <td>R$ ${valor.toFixed(2)}</td>
+                </tr>`;
+
+        }
+
+        function getCMC(callback) {
+            fetch('http://localhost:3000/cmc')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter CMC:', error);
+                });
+        }
+
+        // Geração de relatório de produto com baixo estoque.
+        function prodBaixoEst(prodsEstoque) {
+            var listProdBaixoEst = document.getElementById('prodBaixoEst');
+            listProdBaixoEst.innerHTML = '';
+
+            prodsEstoque.forEach(function (prodEstoque) {
+                listProdBaixoEst.innerHTML += `
+                        <tr>
+                            <td>${prodEstoque.nome}</td>
+                            <td>${prodEstoque.qtdEstoque}</td>
+                        </tr>`;
+            });
+        }
+
+        function getProdBaixoEst(callback) {
+            fetch('http://localhost:3000/prodBaixoEst')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter dados:', error);
+                });
+        }
+
+        // Geração de relatório de produto por cliente. 
+        function prodCliente(produtosCliente) {
+            var listProdCliente = document.getElementById('prodPorCliente');
+            listProdCliente.innerHTML = '';
+
+            produtosCliente.forEach(function (produtoCliente) {
+                listProdCliente.innerHTML += `
+                        <tr>
+                            <td>${produtoCliente.nomeProduto}</td>
+                            <td>${produtoCliente.countCliente}</td>
+                        </tr>`;
+            });
+        }
+
+        function getProdCliente(callback) {
+            fetch('http://localhost:3000/prodCliente')
+                .then(response => response.json())
+                .then(data => callback(data))
+                .catch(error => {
+                    console.error('Erro ao obter dados:', error);
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

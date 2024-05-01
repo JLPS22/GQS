@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excluir Cliente</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #deleteConfirmation {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Excluir Produto</h1>
+
+    <div id="deleteConfirmation">
+        <p>Você tem certeza que deseja excluir este produto?</p>
+        <button onclick="confirmarExclusao()">Confirmar Exclusão</button>
+    </div>
+
+    <script>
+        function confirmarExclusao() {
+            var url = window.location.href;
+            var parametrosURL = new URLSearchParams(url.split('?')[1]);
+            const idProduto = parametrosURL.get('id');
+
+            fetch(`http://localhost:3000/deletar_produto/${idProduto}`, {
+                method: 'DELETE',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                })
+                .catch(error => {
+                    console.error('Erro ao deletar produto:', error);
+                });
+            
+            alert('Produto Deletado.');
+            close('excluirproduto.html');
+            open('gerenciarEstoque.html');
+        }
+    </script>
+</body>
+</html>
