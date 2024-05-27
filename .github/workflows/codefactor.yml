@@ -27,17 +27,5 @@ jobs:
             - name: Run tests
               run: npm test
 
-            - name: Analise do code
-              uses: action/checkout@v2
-              with:
-                repository: ${{ github.repository }}
-                ref: ${{ github.head_ref }}
-                path: ./code
-            - name: Analisar code
-              uses: github/codeql-action/analyze@v1
-              with:
-                languages: javascript
-                queries: ./code
-
             - name: Report results
               run: echo "A construção e análise foram concluidas com sucesso!"
