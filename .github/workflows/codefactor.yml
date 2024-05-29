@@ -1,31 +1,36 @@
 name: Pull Request
 
 on:
-    pull_request:
-        branches:
-            - main
-    push:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout do repositorio
-              uses: actions/checkout@v2
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v2
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v2
-              with:
-                node-version: '14'
-            
-            - name: Instalando dependencias
-              run: npm install
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      
+      - name: Instalando dependências
+        run: npm install
 
-            - name: Run tests
-              run: npm test
+      - name: Rodar testes
+        run: npm test
 
-            - name: Report results
-              run: echo "A construção e análise foram concluidas com sucesso!"
+      - name: Análise de código com CodeQL
+        uses: github/codeql-action/analyze@v1
+        with:
+          languages: javascript
+
+      - name: Reportar resultados
+        run: echo "A construção e análise foram concluídas com sucesso!"
