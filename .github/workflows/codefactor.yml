@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -31,9 +35,6 @@ jobs:
         uses: github/codeql-action/init@v1
         with:
           languages: javascript
-
-      - name: Executar CodeQL
-        run: codeql database analyze
 
       - name: Análise de código com CodeQL
         uses: github/codeql-action/analyze@v1
