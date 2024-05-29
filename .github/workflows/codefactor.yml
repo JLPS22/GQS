@@ -27,10 +27,16 @@ jobs:
       - name: Rodar testes
         run: npm test
 
-      - name: Análise de código com CodeQL
-        uses: github/codeql-action/analyze@v1
+      - name: Inicializar CodeQL
+        uses: github/codeql-action/init@v1
         with:
           languages: javascript
+
+      - name: Executar CodeQL
+        run: codeql database analyze
+
+      - name: Análise de código com CodeQL
+        uses: github/codeql-action/analyze@v1
 
       - name: Reportar resultados
         run: echo "A construção e análise foram concluídas com sucesso!"
