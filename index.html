@@ -10,32 +10,37 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color: #808080;
         }
 
         header {
-            background-color: #333;
-            color: white;
+            background-color: #87CEFA;
+            font-size: larger;
+            color: black;
+            margin: 5px;
+            border-radius: 5px;
             padding: 10px;
             text-align: center;
+            font-family: serif;
         }
 
         main {
             max-width: 800px;
             margin: 20px auto;
             background-color: white;
+            border-radius: 5px;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         button {
-            background-color: #333;
+            background-color: #1C1C1C;
             color: white;
             padding: 10px;
             margin: 5px;
             cursor: pointer;
             border: none;
-            border-radius: 3px;
+            border-radius: 8px;
         }
 
         button:hover {
@@ -47,6 +52,7 @@
     <header>
         <h1>Sistema de Gerenciamento</h1>
         <button onclick="navigate('CRUD_Cliente/gerenciarCliente.html')">Gerenciar Clientes</button>
+        <button onclick="navigate('pedidocompra.html')">Pedido de Compra</button>
         <button onclick="navigate('CRUD_Estoque/gerenciarEstoque.html')">Gerenciar Estoque</button>
         <button onclick="navigate('relatorios.html')">Relatorios</button>
     </header>
