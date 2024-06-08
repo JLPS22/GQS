@@ -1,6 +1,0 @@
-## Descrição
-
-
-### Checklist
-
-- [] Testes unitários
