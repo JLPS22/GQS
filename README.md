@@ -1,5 +1,5 @@
 # Sistema de Gerenciamento de um Mercado
-O projeto é uma aplicaçõa Web que visa auxiliar na organização de um mercado. Proporcionando um maior controle sobre o estoque de itens guardados, vendidos e na alteração de itens comprados. O sitema também permite o cadastro de clientes e, por sua vez, o proprio sistema é capaz de gerar um relatório sobre as vendas, os clientes que efetuaram as compras, os produtos comprados e a quantidade dos mesmos.
+O projeto é uma aplicação Web que visa auxiliar na organização de um mercado. Proporcionando um maior controle sobre o estoque de itens guardados, vendidos e na alteração de itens comprados. O sistema também permite o cadastro de clientes e, por sua vez, o próprio sistema é capaz de gerar um relatório sobre as vendas, os clientes que efetuaram as compras, os produtos comprados e a quantidade dos mesmos.
 
 ### Instrução para a inicialização do projeto
 - Abrir o terminal na sua IDE;
